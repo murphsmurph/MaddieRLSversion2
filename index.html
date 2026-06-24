@@ -16,6 +16,7 @@
     --glow:#c4a9f0; --glow-deep:#9b7fd4; --ink:#f1eefb;
     --ink-soft:#b8b2cf; --ink-faint:#7d7898; --warn:#f0a07a;
     --line:rgba(196,169,240,0.14);
+    --ember:#ff9d4d; --ember-deep:#e7642a; --ember-glow:rgba(255,140,60,.5);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{background:var(--night);}
@@ -26,6 +27,7 @@
     background:
       radial-gradient(900px 500px at 80% -5%, rgba(155,127,212,0.20), transparent 60%),
       radial-gradient(700px 500px at 10% 10%, rgba(143,214,160,0.10), transparent 55%),
+      radial-gradient(600px 320px at 50% 108%, rgba(231,100,42,0.18), transparent 70%),
       var(--night);
   }
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
@@ -35,7 +37,57 @@
   @keyframes float{0%{opacity:0;transform:translateY(0) translateX(0);}
     15%{opacity:.8;}85%{opacity:.8;}
     100%{opacity:0;transform:translateY(-120px) translateX(30px);}}
-  .wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px;}
+  .wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+
+  /* ===== bottom tab bar (iPhone-style) ===== */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;
+    display:flex;justify-content:space-around;align-items:stretch;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(25,22,38,0.86);backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--line);}
+  .tb{flex:1;background:none;border:none;display:flex;flex-direction:column;
+    align-items:center;gap:3px;padding:5px 2px;color:var(--ink-faint);
+    transition:transform .14s ease, color .2s;}
+  .tb:active{transform:scale(.9);}
+  .tb-ic{font-size:21px;line-height:1;filter:grayscale(.4) opacity(.7);transition:.2s;}
+  .tb-l{font-size:10.5px;font-weight:600;letter-spacing:.2px;}
+  .tb.on{color:var(--ember);}
+  .tb.on .tb-ic{filter:none;transform:translateY(-1px);
+    text-shadow:0 0 12px var(--ember-glow);}
+
+  /* ===== in-section sub-nav chips ===== */
+  .subnav{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;
+    margin:4px 0 4px;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+  .subnav::-webkit-scrollbar{display:none;}
+  .sn{flex:0 0 auto;border:1px solid var(--line);background:var(--card);
+    color:var(--ink-soft);font-size:12.5px;font-weight:600;
+    padding:8px 13px;border-radius:13px;white-space:nowrap;transition:transform .14s, background .2s, color .2s;}
+  .sn:active{transform:scale(.93);}
+  .sn.on{background:linear-gradient(135deg,var(--ember-deep),var(--glow-deep));
+    color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(231,100,42,.3);}
+
+  /* ===== bonfire ===== */
+  .bonfire{position:relative;height:150px;display:flex;align-items:flex-end;
+    justify-content:center;margin:8px 0 2px;}
+  .bonfire .glow{position:absolute;bottom:6px;width:200px;height:200px;
+    background:radial-gradient(circle,var(--ember-glow),transparent 65%);
+    animation:emberPulse 3.6s ease-in-out infinite;}
+  @keyframes emberPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:.9;transform:scale(1.08);}}
+  .flame{position:absolute;bottom:24px;transform-origin:bottom center;}
+  .flame.f1{animation:flick 1.5s ease-in-out infinite;}
+  .flame.f2{animation:flick 1.1s ease-in-out infinite reverse;}
+  .flame.f3{animation:flick 0.9s ease-in-out infinite;}
+  @keyframes flick{0%,100%{transform:scaleY(1) scaleX(1) translateX(0);}
+    25%{transform:scaleY(1.12) scaleX(.94) translateX(-2px);}
+    50%{transform:scaleY(.92) scaleX(1.05) translateX(2px);}
+    75%{transform:scaleY(1.06) scaleX(.97) translateX(-1px);}}
+  .spark-d{position:absolute;width:3px;height:3px;border-radius:50%;
+    background:var(--ember);bottom:60px;opacity:0;
+    animation:rise2 linear infinite;}
+  @keyframes rise2{0%{opacity:0;transform:translateY(0);}
+    20%{opacity:1;}100%{opacity:0;transform:translateY(-90px) translateX(var(--dx,0));}}
 
   header{padding:calc(env(safe-area-inset-top) + 24px) 0 6px;text-align:center;}
   .crest{font-size:38px;line-height:1;filter:drop-shadow(0 0 12px rgba(196,169,240,.4));}
@@ -206,6 +258,25 @@
     font-size:14px;padding:11px 16px;border-radius:13px;}
   .ironresult{margin-top:10px;font-size:13.5px;line-height:1.5;}
 
+  /* chart legend */
+  .legend{display:flex;gap:12px;align-items:center;margin-top:6px;font-size:12px;font-weight:600;}
+  .legend .lg-sev{color:#e08a6a;}
+  .legend .lg-slp{color:#9b7fd4;}
+
+  /* reading list links */
+  .readlink{display:flex;align-items:center;gap:13px;text-decoration:none;
+    background:var(--card2);border:1px solid var(--line);border-radius:16px;
+    padding:14px;margin-top:9px;transition:transform .14s ease, border-color .2s;}
+  .readlink:active{transform:scale(.98);border-color:var(--glow);}
+  .readlink .rl-ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;
+    background:rgba(196,169,240,.12);display:flex;align-items:center;
+    justify-content:center;font-size:20px;}
+  .readlink .rl-t{flex:1;}
+  .readlink .rl-t b{color:var(--ink);font-size:14px;font-weight:600;display:block;}
+  .readlink .rl-t small{color:var(--ink-faint);font-size:12px;line-height:1.4;
+    display:block;margin-top:2px;}
+  .readlink .rl-ar{flex:0 0 auto;color:var(--glow);font-size:18px;}
+
   /* criteria checklist */
   .check{display:flex;align-items:flex-start;gap:12px;padding:13px;margin-top:9px;
     background:var(--card2);border:1px solid var(--line);border-radius:15px;
@@ -244,24 +315,56 @@
     <div class="sub" id="greeting">A cozy burrow for taming the wriggles 🐛</div>
   </header>
 
-  <nav id="nav">
-    <button class="tab on" data-t="home">🏡 Den</button>
-    <button class="tab" data-t="log">🐾 Check In</button>
-    <button class="tab" data-t="sos">🚨 Right Now</button>
-    <button class="tab" data-t="patterns">🔮 Patterns</button>
-    <button class="tab" data-t="day">☀️ My Day</button>
-    <button class="tab" data-t="night">🌙 Wind Down</button>
-    <button class="tab" data-t="timer">⏱️ Timer</button>
-    <button class="tab" data-t="iron">🩸 Iron</button>
-    <button class="tab" data-t="avoid">⚠️ Watch Out</button>
-    <button class="tab" data-t="med">💊 Med Watch</button>
-    <button class="tab" data-t="why">🐝 Why?</button>
-  </nav>
+  <!-- hidden master tab list: drives routing, not shown -->
+  <div id="nav" style="display:none;">
+    <button class="tab on" data-t="home"></button>
+    <button class="tab" data-t="log"></button>
+    <button class="tab" data-t="sos"></button>
+    <button class="tab" data-t="patterns"></button>
+    <button class="tab" data-t="spark"></button>
+    <button class="tab" data-t="day"></button>
+    <button class="tab" data-t="night"></button>
+    <button class="tab" data-t="timer"></button>
+    <button class="tab" data-t="iron"></button>
+    <button class="tab" data-t="avoid"></button>
+    <button class="tab" data-t="med"></button>
+    <button class="tab" data-t="why"></button>
+  </div>
 
   <!-- ================= HOME / DEN ================= -->
   <section class="on" id="home">
+    <div class="bonfire" id="bonfire">
+      <div class="glow"></div>
+      <!-- logs -->
+      <svg width="150" height="150" viewBox="0 0 150 150" style="position:absolute;bottom:0;">
+        <!-- log pile -->
+        <g stroke="#3a2a22" stroke-width="2">
+          <rect x="38" y="116" width="74" height="13" rx="6" fill="#5a3d2e" transform="rotate(-8 75 122)"/>
+          <rect x="38" y="116" width="74" height="13" rx="6" fill="#4a3225" transform="rotate(8 75 122)"/>
+        </g>
+        <circle cx="50" cy="121" r="4" fill="#7a5440"/>
+        <circle cx="100" cy="121" r="4" fill="#7a5440"/>
+      </svg>
+      <!-- flames -->
+      <svg class="flame f1" width="70" height="110" viewBox="0 0 70 110" style="z-index:2;">
+        <path d="M35 6 C50 34, 60 50, 50 76 C46 92, 24 92, 20 76 C12 54, 24 40, 35 6 Z" fill="url(#fl1)"/>
+        <defs><linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd27a"/><stop offset="0.5" stop-color="#ff9d4d"/>
+          <stop offset="1" stop-color="#e7642a"/></linearGradient></defs>
+      </svg>
+      <svg class="flame f2" width="46" height="86" viewBox="0 0 46 86" style="z-index:3;">
+        <path d="M23 6 C33 26, 38 40, 31 58 C28 70, 16 70, 13 58 C8 44, 16 30, 23 6 Z" fill="url(#fl2)"/>
+        <defs><linearGradient id="fl2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff1c4"/><stop offset="0.6" stop-color="#ffb45e"/>
+          <stop offset="1" stop-color="#ff7a36"/></linearGradient></defs>
+      </svg>
+      <svg class="flame f3" width="26" height="56" viewBox="0 0 26 56" style="z-index:4;">
+        <path d="M13 4 C19 18, 22 26, 17 38 C15 46, 9 46, 7 38 C4 28, 9 18, 13 4 Z" fill="#fff3d0"/>
+      </svg>
+    </div>
+
     <div class="insight" id="todayCard">
-      <h2><span class="ic">🦋</span> Today</h2>
+      <h2><span class="ic">🔥</span> Rest here a while</h2>
       <div class="big" id="todayMsg">Loading your den…</div>
     </div>
 
@@ -298,7 +401,12 @@
 
   <!-- ================= CHECK IN / LOG ================= -->
   <section id="log">
+    <div class="subnav">
+      <button class="sn on" data-go="log">🐾 Check In</button>
+      <button class="sn" data-go="patterns">📈 Patterns</button>
+    </div>
     <p class="lead">A 60-second nightly check-in. The more you log, the better I can spot what sets your legs off — and what calms them. No wrong answers. 🐾</p>
+    <p class="lead" id="logNote" style="color:var(--moss);font-weight:600;margin-top:6px;">One check-in per day. Takes about 60 seconds.</p>
 
     <div class="card">
       <div class="qmark">How bad were your legs today? <span class="opt" id="sevReadout">tap one</span></div>
@@ -322,6 +430,10 @@
 
   <!-- ================= RIGHT NOW ================= -->
   <section id="sos">
+    <div class="subnav">
+      <button class="sn on" data-go="sos">🆘 Right Now</button>
+      <button class="sn" data-go="timer">⏱️ Timer</button>
+    </div>
     <div class="card">
       <span class="pill now">When legs won't quit</span>
       <h2><span class="ic">🌟</span> First: don't fight it in bed</h2>
@@ -346,13 +458,69 @@
 
   <!-- ================= PATTERNS ================= -->
   <section id="patterns">
+    <div class="subnav">
+      <button class="sn" data-go="log">🐾 Check In</button>
+      <button class="sn on" data-go="patterns">📈 Patterns</button>
+    </div>
     <p class="lead">This is where your check-ins pay off. The more nights you log, the clearer your personal map gets. 🔮</p>
 
     <div id="patternsContent"></div>
   </section>
 
+  <!-- ================= SPARK ================= -->
+  <section id="spark">
+    <div class="insight">
+      <h2><span class="ic">✨</span> A little something for today</h2>
+      <div class="big" id="sparkMsg">…</div>
+    </div>
+    <button class="ghostbtn" onclick="newSpark()">Give me another 🔄</button>
+
+    <div class="card">
+      <h2><span class="ic">📚</span> Read it yourself</h2>
+      <p>Trustworthy, plain-language sources — opens in your browser. Knowing the science is its own kind of relief. 🦋</p>
+    </div>
+
+    <a class="readlink" href="https://www.ninds.nih.gov/health-information/disorders/restless-legs-syndrome" target="_blank" rel="noopener">
+      <div class="rl-ic">🏛️</div>
+      <div class="rl-t"><b>NINDS — RLS overview</b><small>The U.S. government's neurology institute. The plain, authoritative basics.</small></div>
+      <div class="rl-ar">↗</div>
+    </a>
+    <a class="readlink" href="https://www.rls.org/" target="_blank" rel="noopener">
+      <div class="rl-ic">🤝</div>
+      <div class="rl-t"><b>RLS Foundation</b><small>The patient community + advocacy org. Support, newsletters, latest news.</small></div>
+      <div class="rl-ar">↗</div>
+    </a>
+    <a class="readlink" href="https://www.sleepfoundation.org/restless-legs-syndrome" target="_blank" rel="noopener">
+      <div class="rl-ic">🌙</div>
+      <div class="rl-t"><b>Sleep Foundation — RLS</b><small>Symptoms, causes, and sleep-focused tips, in everyday language.</small></div>
+      <div class="rl-ar">↗</div>
+    </a>
+    <a class="readlink" href="https://www.mayoclinic.org/diseases-conditions/restless-legs-syndrome/diagnosis-treatment/drc-20377174" target="_blank" rel="noopener">
+      <div class="rl-ic">⚕️</div>
+      <div class="rl-t"><b>Mayo Clinic — diagnosis & treatment</b><small>What to expect at the doctor, current treatment approaches.</small></div>
+      <div class="rl-ar">↗</div>
+    </a>
+    <a class="readlink" href="https://pubmed.ncbi.nlm.nih.gov/?term=restless+legs+syndrome+treatment+review" target="_blank" rel="noopener">
+      <div class="rl-ic">🔬</div>
+      <div class="rl-t"><b>PubMed — research search</b><small>For the deep-divers: real medical studies. Dense, but it's the source.</small></div>
+      <div class="rl-ar">↗</div>
+    </a>
+
+    <div class="card" style="margin-top:14px;">
+      <p style="color:var(--ink-faint);font-size:12.5px;">These are independent sources, not written for this app. RLS guidance changes over time — if a link looks out of date, the RLS Foundation is the best place to start fresh.</p>
+    </div>
+  </section>
+
   <!-- ================= MY DAY ================= -->
   <section id="day">
+    <div class="subnav guide">
+      <button class="sn on" data-go="day">☀️ Day</button>
+      <button class="sn" data-go="night">🌙 Wind Down</button>
+      <button class="sn" data-go="iron">🩸 Iron</button>
+      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn" data-go="med">💊 Meds</button>
+      <button class="sn" data-go="why">🐝 Why</button>
+    </div>
     <p class="lead">RLS is partly set by what happens <i>before</i> bedtime. Win the day, calm the night. Pick even one. 🐛</p>
     <div class="card"><span class="pill day">Morning + afternoon</span>
       <h2><span class="ic">💧</span> Baseline care</h2>
@@ -374,6 +542,14 @@
 
   <!-- ================= WIND DOWN ================= -->
   <section id="night">
+    <div class="subnav guide">
+      <button class="sn" data-go="day">☀️ Day</button>
+      <button class="sn on" data-go="night">🌙 Wind Down</button>
+      <button class="sn" data-go="iron">🩸 Iron</button>
+      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn" data-go="med">💊 Meds</button>
+      <button class="sn" data-go="why">🐝 Why</button>
+    </div>
     <p class="lead">An hour before bed, start telling your nervous system it's safe to rest. 🌙🦇</p>
     <div class="card"><span class="pill night">~1 hr before bed</span>
       <h2><span class="ic">📓</span> Brain dump</h2>
@@ -392,6 +568,10 @@
 
   <!-- ================= TIMER ================= -->
   <section id="timer">
+    <div class="subnav">
+      <button class="sn" data-go="sos">🆘 Right Now</button>
+      <button class="sn on" data-go="timer">⏱️ Timer</button>
+    </div>
     <div class="card"><h2><span class="ic">⏱️</span> Rescue timer</h2>
       <p>Pick a length, breathe, let it run while you stretch or use heat. A soft chime sounds when done.</p>
       <div class="presets" id="presets">
@@ -415,6 +595,14 @@
 
   <!-- ================= IRON ================= -->
   <section id="iron">
+    <div class="subnav guide">
+      <button class="sn" data-go="day">☀️ Day</button>
+      <button class="sn" data-go="night">🌙 Wind Down</button>
+      <button class="sn on" data-go="iron">🩸 Iron</button>
+      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn" data-go="med">💊 Meds</button>
+      <button class="sn" data-go="why">🐝 Why</button>
+    </div>
     <div class="card"><span class="pill day">The biggest lever</span>
       <h2><span class="ic">🩸</span> Iron is the #1 thing</h2>
       <p>Low brain iron is one of the main drivers of RLS — it starves the dopamine "brake." The newest 2025 guidelines put iron <b>first</b>, ahead of older drugs.</p></div>
@@ -441,6 +629,14 @@
 
   <!-- ================= WATCH OUT ================= -->
   <section id="avoid">
+    <div class="subnav guide">
+      <button class="sn" data-go="day">☀️ Day</button>
+      <button class="sn" data-go="night">🌙 Wind Down</button>
+      <button class="sn" data-go="iron">🩸 Iron</button>
+      <button class="sn on" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn" data-go="med">💊 Meds</button>
+      <button class="sn" data-go="why">🐝 Why</button>
+    </div>
     <p class="lead">Some everyday things quietly crank RLS up. Not rules — just things to notice. 🐝</p>
     <div class="warnbox"><h2><span class="ic">🚫</span> The big one: sedating antihistamines</h2>
       <p>Benadryl (diphenhydramine), ZzzQuil, and "PM" sleep aids block dopamine and can flare RLS hard within an hour. For allergies, ask a pharmacist about gentler options.</p></div>
@@ -455,6 +651,14 @@
 
   <!-- ================= MED WATCH / AUGMENTATION ================= -->
   <section id="med">
+    <div class="subnav guide">
+      <button class="sn" data-go="day">☀️ Day</button>
+      <button class="sn" data-go="night">🌙 Wind Down</button>
+      <button class="sn" data-go="iron">🩸 Iron</button>
+      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn on" data-go="med">💊 Meds</button>
+      <button class="sn" data-go="why">🐝 Why</button>
+    </div>
     <p class="lead">You're not on RLS medication now — so this is just <i>future-you insurance</i>. If a doctor ever puts you on certain older RLS drugs, there's one pattern that's really good to recognize early. 💊</p>
 
     <div class="card">
@@ -493,6 +697,14 @@
 
   <!-- ================= WHY ================= -->
   <section id="why">
+    <div class="subnav guide">
+      <button class="sn" data-go="day">☀️ Day</button>
+      <button class="sn" data-go="night">🌙 Wind Down</button>
+      <button class="sn" data-go="iron">🩸 Iron</button>
+      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
+      <button class="sn" data-go="med">💊 Meds</button>
+      <button class="sn on" data-go="why">🐝 Why</button>
+    </div>
     <div class="card"><h2><span class="ic">🧠</span> What's actually happening</h2>
       <p>Your brain uses dopamine as a "brake pedal" for movement, and needs iron to make it. When brain iron runs low, the brake weakens — so at rest, legs get that urge to move. Moving briefly restores the brake, which is why walking helps and lying still feels awful.</p></div>
     <div class="card"><h2><span class="ic">🧬</span> Why you, why now</h2>
@@ -521,6 +733,14 @@
 
 </div>
 
+<nav class="tabbar" id="tabbar">
+  <button class="tb on" data-go="home"><span class="tb-ic">🔥</span><span class="tb-l">Den</span></button>
+  <button class="tb" data-go="log"><span class="tb-ic">🐾</span><span class="tb-l">Log</span></button>
+  <button class="tb" data-go="sos"><span class="tb-ic">🆘</span><span class="tb-l">Relief</span></button>
+  <button class="tb" data-go="day"><span class="tb-ic">📖</span><span class="tb-l">Guide</span></button>
+  <button class="tb" data-go="spark"><span class="tb-ic">✨</span><span class="tb-l">Spark</span></button>
+</nav>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -530,6 +750,32 @@ function load(){try{return JSON.parse(localStorage.getItem(STORE))||{logs:[],fer
   catch(e){return{logs:[],ferritin:null,meds:null};}}
 function save(d){try{localStorage.setItem(STORE,JSON.stringify(d));}catch(e){}}
 var data=load();
+
+// --- one-time safe migration: normalize old unpadded date keys (e.g. 2026-6-1 -> 2026-06-01) ---
+// Preserves all existing check-ins; only reformats the day key and removes any accidental
+// same-day duplicates (keeping the most recent). Never deletes real data.
+(function migrate(){
+  if(!data.logs||!data.logs.length)return;
+  var changed=false, seen={};
+  // sort by timestamp so the latest same-day entry wins
+  data.logs.sort(function(a,b){return (a.t||0)-(b.t||0);});
+  var out=[];
+  data.logs.forEach(function(l){
+    if(typeof l.k==='string' && l.k.indexOf('-')>0){
+      var p=l.k.split('-');
+      if(p.length===3){
+        var nk=p[0]+'-'+(p[1].length<2?'0':'')+p[1]+'-'+(p[2].length<2?'0':'')+p[2];
+        if(nk!==l.k){l.k=nk;changed=true;}
+      }
+    }
+    seen[l.k]=l; // later entry overwrites earlier same-day
+  });
+  Object.keys(seen).sort().forEach(function(k){out.push(seen[k]);});
+  if(changed || out.length!==data.logs.length){
+    data.logs=out.sort(function(a,b){return (a.t||0)-(b.t||0);});
+    save(data);
+  }
+})();
 
 var TRIGGERS=["☕ Caffeine pm","🍷 Alcohol","🚬 Nicotine","🥤 Low water","🔥 Hot room",
   "🏋️ Late workout","🍰 Heavy/sugary dinner","😣 Stressful day","😴 Poor sleep","💊 New meds"];
@@ -545,6 +791,25 @@ var CRITERIA=[
 ];
 var critSel=[];
 
+var SPARKS=[
+  "Resting is not failing. Your legs are loud right now, but loud is not forever. 🦇",
+  "You're allowed to have a rough night and still be doing everything right. 🌙",
+  "Tracking even one thing today is a quiet act of taking care of yourself. 🐛",
+  "Your nervous system is doing its best with the wiring it got. Be gentle with it — and you. 🦋",
+  "Movement is medicine here. Getting up to stretch isn't giving in; it's the actual fix. 🚶",
+  "Low iron is fixable. Triggers are learnable. This is a manageable thing, not a life sentence. 🩸",
+  "The fact that this runs in your family means you're not imagining it — and you're not alone in it.",
+  "Some nights you manage RLS perfectly and it still flares. That's the condition, not your effort. 💜",
+  "Cool room, calm breath, busy mind. You have tools now that you didn't have before. 🌬️",
+  "You don't have to win the whole night. Just get through this next twenty minutes. 🦔",
+  "A flare is information, not a verdict. What did today's body need? You're learning its language.",
+  "Bats rest upside down and still thrive. There's more than one right way to find peace. 🦇",
+  "You built habits that help. On hard nights, trust the habits even when you don't feel them working.",
+  "Being tired and frustrated is fair. You're carrying something invisible, and you're still here. 🌟",
+  "Caffeine cutoff, a daytime walk, a cool pillow — tiny choices stack into calmer nights. 🐝",
+  "Your worth isn't measured in hours slept. Rest however you can, in whatever shape it takes. 🌙"
+];
+
 var sel={sev:null,slp:null,trig:[],help:[]};
 
 /* ============ FIREFLIES ============ */
@@ -554,19 +819,46 @@ var sel={sev:null,slp:null,trig:[],help:[]};
     var d=6+Math.random()*8;f.style.animationDuration=d+'s';
     f.style.animationDelay=(Math.random()*d)+'s';sky.appendChild(f);}})();
 
+/* ============ BONFIRE EMBERS ============ */
+(function(){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bf=document.getElementById('bonfire');
+  if(!bf||reduce)return;
+  for(var i=0;i<8;i++){
+    var s=document.createElement('div');s.className='spark-d';
+    s.style.left=(42+Math.random()*16)+'%';
+    var dur=2.2+Math.random()*2.2;
+    s.style.animationDuration=dur+'s';
+    s.style.animationDelay=(Math.random()*dur)+'s';
+    s.style.setProperty('--dx',(Math.random()*30-15)+'px');
+    bf.appendChild(s);
+  }
+})();
+
 /* ============ TABS ============ */
 var tabs=document.querySelectorAll('.tab');
+// which bottom-bar tab "owns" each section
+var GROUP={home:'home', log:'log', patterns:'log', sos:'sos', timer:'sos',
+  day:'day', night:'day', iron:'day', avoid:'day', med:'day', why:'day', spark:'spark'};
 function go(t){
   tabs.forEach(function(b){b.classList.toggle('on',b.dataset.t===t);});
   document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===t);});
+  // sync bottom bar to the owning group
+  var owner=GROUP[t]||'home';
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.toggle('on',b.dataset.go===owner);});
   window.scrollTo({top:0,behavior:'smooth'});
   if(t==='home')renderHome();
   if(t==='patterns')renderPatterns();
   if(t==='log')renderLog();
   if(t==='why')renderCriteria();
   if(t==='med')renderMed();
+  if(t==='spark')renderSpark();
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){go(b.dataset.t);});});
+// bottom tab bar + all sub-nav buttons route via data-go
+document.querySelectorAll('[data-go]').forEach(function(b){
+  b.addEventListener('click',function(){go(b.dataset.go);if(navigator.vibrate)navigator.vibrate(5);});
+});
 
 /* ============ TOAST ============ */
 var toastT;
@@ -575,8 +867,11 @@ function toast(msg){var el=document.getElementById('toast');el.textContent=msg;
   toastT=setTimeout(function(){el.classList.remove('show');},2600);}
 
 /* ============ DATE HELPERS ============ */
-function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
-function niceDate(k){var p=k.split('-');var d=new Date(p[0],p[1]-1,p[2]);
+// Calendar-day key from the PHONE'S local clock (zero-padded so grouping/sorting is exact).
+// One entry per calendar day is enforced in saveLog() by replacing any same-day entry.
+function pad2(x){return (x<10?'0':'')+x;}
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+function niceDate(k){var p=k.split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);
   return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});}
 function loggedToday(){return data.logs.some(function(l){return l.k===todayKey();});}
 
@@ -603,21 +898,61 @@ function checkSave(){document.getElementById('saveBtn').disabled=(sel.sev===null
 function renderLog(){
   buildScale('sevScale','sev');buildScale('slpScale','slp');
   buildChips('trigChips',TRIGGERS,'trig','');buildChips('helpChips',HELPERS,'help','help');
-  sel={sev:null,slp:null,trig:[],help:[]};checkSave();
+  sel={sev:null,slp:null,trig:[],help:[]};
   var sr=document.getElementById('sevReadout');if(sr)sr.textContent='tap one';
   var lr=document.getElementById('slpReadout');if(lr)lr.textContent='tap one';
+
+  // if today is already logged, pre-fill so she's editing, not starting blank
+  var k=todayKey();
+  var existing=null;
+  for(var i=data.logs.length-1;i>=0;i--){if(data.logs[i].k===k){existing=data.logs[i];break;}}
+  var note=document.getElementById('logNote');
+  if(existing){
+    sel={sev:existing.sev,slp:existing.slp,trig:(existing.trig||[]).slice(),help:(existing.help||[]).slice()};
+    // reflect selections in the UI
+    preselectScale('sevScale','sev',existing.sev);
+    preselectScale('slpScale','slp',existing.slp);
+    preselectChips('trigChips',existing.trig||[]);
+    preselectChips('helpChips',existing.help||[]);
+    if(existing.sev!==null)updateReadout('sev',existing.sev);
+    if(existing.slp!==null)updateReadout('slp',existing.slp);
+    if(note)note.textContent="You've already checked in today — this will update it.";
+  } else {
+    if(note)note.textContent="One check-in per day. Takes about 60 seconds.";
+  }
+  checkSave();
+}
+function preselectScale(id,key,val){
+  if(val===null||val===undefined)return;
+  var w=document.getElementById(id);if(!w)return;
+  w.querySelectorAll('button').forEach(function(b){
+    if(parseInt(b.textContent,10)===val)b.classList.add('sel'); else b.classList.remove('sel');
+  });
+}
+function preselectChips(id,arr){
+  var w=document.getElementById(id);if(!w)return;
+  w.querySelectorAll('button').forEach(function(b){
+    if(arr.indexOf(b.textContent)>=0)b.classList.add('sel'); else b.classList.remove('sel');
+  });
 }
 
 function saveLog(){
   if(sel.sev===null)return;
   var k=todayKey();
-  data.logs=data.logs.filter(function(l){return l.k!==k;}); // overwrite today
+  var already=data.logs.some(function(l){return l.k===k;});
+  if(already){
+    if(!confirm("You already checked in today. Update today's entry with these new answers?")){
+      return;
+    }
+  }
+  data.logs=data.logs.filter(function(l){return l.k!==k;}); // one entry per calendar day
   data.logs.push({k:k,t:Date.now(),sev:sel.sev,slp:sel.slp,trig:sel.trig.slice(),help:sel.help.slice()});
   data.logs.sort(function(a,b){return a.t-b.t;});
   save(data);
   var n=data.logs.length;
-  var msg=n===1?"First check-in saved! 🌱 This is the whole game — just showing up.":
-    "Saved 🌙 "+n+" nights logged. You're building your map.";
+  var msg= already ? "Updated today's check-in 🌙" :
+    (n===1?"First check-in saved! 🌱 This is the whole game — just showing up.":
+    "Saved 🌙 "+n+" nights logged. You're building your map.");
   toast(msg);
   if(navigator.vibrate)navigator.vibrate([40,30,40]);
   setTimeout(function(){go('patterns');},700);
@@ -713,14 +1048,12 @@ function renderPatterns(){
     (avgSlpV!==null?'<div class="stat"><div class="v">'+avgSlpV.toFixed(1)+'</div><div class="l">avg sleep<br>(last 14)</div></div>':'')+
     '</div>';
 
-  // severity bars (last 7 logged)
-  var last=data.logs.slice(-7);
-  html+='<div class="card"><h2><span class="ic">📊</span> Recent nights</h2><div class="bars barwrap">';
-  last.forEach(function(l){var h=Math.max(8,l.sev/10*80);
-    var col=l.sev>=7?'#c85c5c':l.sev>=4?'#e8c98a':'#8fd6a0';
-    var p=l.k.split('-');
-    html+='<div class="bar" style="height:'+h+'px;background:'+col+';"><span class="bl">'+p[1]+'/'+p[2]+'</span></div>';});
-  html+='</div></div>';
+  // line chart (last 14 logged nights): legs + sleep
+  var last=data.logs.slice(-14);
+  html+='<div class="card"><h2><span class="ic">📈</span> Your trend</h2>'+
+    '<div class="legend"><span class="lg lg-sev">● Legs</span> <span class="lg lg-slp">● Sleep</span> '+
+    '<span style="color:var(--ink-faint);font-size:11px;">last '+last.length+' logged</span></div>'+
+    lineChart(last)+'</div>';
 
   // triggers before bad nights
   if(trigArr.length){
@@ -777,6 +1110,56 @@ function clearData(){
   if(confirm("Clear all your check-ins and notes? This can't be undone.")){
     data={logs:[],ferritin:null};save(data);toast("All cleared 🌱");renderPatterns();
   }
+}
+
+/* ============ LINE CHART ============ */
+function lineChart(logs){
+  if(!logs.length)return '';
+  var W=320,H=140,padL=24,padB=22,padT=10,padR=8;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  var n=logs.length;
+  function x(i){return padL + (n===1?iw/2:(i/(n-1))*iw);}
+  function y(v){return padT + (1-(v/10))*ih;}
+  // gridlines at 0,5,10
+  var grid='';
+  [0,5,10].forEach(function(g){var yy=y(g);
+    grid+='<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="rgba(196,169,240,0.12)" stroke-width="1"/>';
+    grid+='<text x="'+(padL-6)+'" y="'+(yy+3)+'" fill="#7d7898" font-size="9" text-anchor="end">'+g+'</text>';});
+  // build paths
+  function path(key,col){
+    var pts=logs.map(function(l,i){var v=(key==='slp'?l.slp:l.sev);
+      return v===null?null:[x(i),y(v)];});
+    var dStr='',started=false,dots='';
+    pts.forEach(function(p){if(p){dStr+=(started?' L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);started=true;
+      dots+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6" fill="'+col+'"/>';}});
+    return '<path d="'+dStr+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'+dots;
+  }
+  // x labels (first, middle, last)
+  var xl='';
+  [0,Math.floor((n-1)/2),n-1].forEach(function(i){if(i<0)return;var p=logs[i].k.split('-');
+    xl+='<text x="'+x(i).toFixed(1)+'" y="'+(H-6)+'" fill="#7d7898" font-size="9" text-anchor="middle">'+p[1]+'/'+p[2]+'</text>';});
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;margin-top:8px;">'+
+    grid+path('sev','#e08a6a')+path('slp','#9b7fd4')+xl+'</svg>';
+}
+
+/* ============ SPARK (encouragement) ============ */
+function dayIndex(){
+  // deterministic: same message all day, changes daily
+  var d=new Date();
+  var n=d.getFullYear()*1000 + (d.getMonth()+1)*40 + d.getDate();
+  return n % SPARKS.length;
+}
+var sparkOffset=0;
+function renderSpark(){
+  sparkOffset=0;
+  var el=document.getElementById('sparkMsg');
+  if(el)el.textContent=SPARKS[dayIndex()];
+}
+function newSpark(){
+  sparkOffset=(sparkOffset+1);
+  var el=document.getElementById('sparkMsg');
+  if(el)el.textContent=SPARKS[(dayIndex()+sparkOffset)%SPARKS.length];
+  if(navigator.vibrate)navigator.vibrate(6);
 }
 
 /* ============ CRITERIA SELF-CHECK ============ */
