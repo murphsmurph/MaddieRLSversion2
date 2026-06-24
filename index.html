@@ -19,17 +19,21 @@
     --ember:#ff9d4d; --ember-deep:#e7642a; --ember-glow:rgba(255,140,60,.5);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{height:100%;}
   html,body{background:var(--night);}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    color:var(--ink);min-height:100vh;overflow-x:hidden;
-    padding-bottom:env(safe-area-inset-bottom);
+    color:var(--ink);overflow-x:hidden;width:100%;max-width:100%;
+    height:100vh;height:100dvh;
+    display:flex;flex-direction:column;
     background:
       radial-gradient(900px 500px at 80% -5%, rgba(155,127,212,0.20), transparent 60%),
       radial-gradient(700px 500px at 10% 10%, rgba(143,214,160,0.10), transparent 55%),
       radial-gradient(600px 320px at 50% 108%, rgba(231,100,42,0.18), transparent 70%),
       var(--night);
   }
+  .scroller{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+    position:relative;z-index:1;width:100%;max-width:100%;}
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
   .firefly{position:absolute;width:5px;height:5px;border-radius:50%;
     background:var(--moth);box-shadow:0 0 8px 2px rgba(232,201,138,0.7);
@@ -37,11 +41,10 @@
   @keyframes float{0%{opacity:0;transform:translateY(0) translateX(0);}
     15%{opacity:.8;}85%{opacity:.8;}
     100%{opacity:0;transform:translateY(-120px) translateX(30px);}}
-  .wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px;
-    padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  .wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px 24px;}
 
-  /* ===== bottom tab bar (iPhone-style) ===== */
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;
+  /* ===== bottom tab bar (now a flex child, not fixed) ===== */
+  .tabbar{flex:0 0 auto;z-index:40;
     display:flex;justify-content:space-around;align-items:stretch;
     padding:8px 6px calc(8px + env(safe-area-inset-bottom));
     background:rgba(25,22,38,0.86);backdrop-filter:blur(20px);
@@ -51,8 +54,8 @@
     align-items:center;gap:3px;padding:5px 2px;color:var(--ink-faint);
     transition:transform .14s ease, color .2s;}
   .tb:active{transform:scale(.9);}
-  .tb-ic{font-size:21px;line-height:1;filter:grayscale(.4) opacity(.7);transition:.2s;}
-  .tb-l{font-size:10.5px;font-weight:600;letter-spacing:.2px;}
+  .tb-ic{font-size:27px;line-height:1;filter:grayscale(.4) opacity(.7);transition:.2s;}
+  .tb-l{font-size:11.5px;font-weight:600;letter-spacing:.2px;}
   .tb.on{color:var(--ember);}
   .tb.on .tb-ic{filter:none;transform:translateY(-1px);
     text-shadow:0 0 12px var(--ember-glow);}
@@ -68,23 +71,59 @@
   .sn.on{background:linear-gradient(135deg,var(--ember-deep),var(--glow-deep));
     color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(231,100,42,.3);}
 
+  /* ===== in-section topic divider ===== */
+  .seph{display:flex;align-items:center;gap:10px;margin:24px 2px 12px;
+    color:var(--ink-soft);font-size:13px;font-weight:700;letter-spacing:.3px;}
+  .seph::before,.seph::after{content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,transparent,var(--line),transparent);}
+
+  /* ===== video link cards ===== */
+  .vlink{display:flex;align-items:center;gap:13px;text-decoration:none;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:13px 14px;margin:9px 0;transition:transform .14s, border-color .2s;
+    max-width:100%;box-sizing:border-box;}
+  .vlink:active{transform:scale(.98);}
+  .vlink .play{flex:0 0 auto;width:46px;height:46px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;
+    background:linear-gradient(135deg,var(--ember-deep),var(--glow-deep));
+    box-shadow:0 3px 12px rgba(231,100,42,.3);}
+  .vlink .vtxt{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;word-break:break-word;}
+  .vlink .vtxt b{color:var(--ink);font-size:14.5px;display:block;line-height:1.3;}
+  .vlink .vtxt span{color:var(--ink-faint);font-size:12.5px;}
+  .vlink .ext{flex:0 0 auto;color:var(--ink-faint);font-size:13px;}
+
+  /* ===== ambient soundscape buttons ===== */
+  .sounds{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px;}
+  .snd{flex:1 1 calc(50% - 5px);border:1px solid var(--line);background:var(--card2);
+    color:var(--ink-soft);font-size:14px;font-weight:600;padding:14px 10px;
+    border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;
+    cursor:pointer;transition:transform .14s, background .2s, color .2s, border-color .2s;}
+  .snd:active{transform:scale(.96);}
+  .snd.on{background:linear-gradient(135deg,var(--ember-deep),var(--glow-deep));
+    color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(231,100,42,.3);}
+  .vol{display:flex;align-items:center;gap:10px;margin-top:13px;}
+  .vol input{flex:1;accent-color:var(--glow);}
+  .vol span{font-size:12.5px;color:var(--ink-faint);white-space:nowrap;}
+
   /* ===== bonfire ===== */
-  .bonfire{position:relative;height:150px;display:flex;align-items:flex-end;
-    justify-content:center;margin:8px 0 2px;}
-  .bonfire .glow{position:absolute;bottom:6px;width:200px;height:200px;
+  .bonfire{position:relative;height:130px;display:flex;align-items:center;
+    justify-content:center;margin:4px 0 0;}
+  .bonfire .glow{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+    width:200px;height:200px;
     background:radial-gradient(circle,var(--ember-glow),transparent 65%);
-    animation:emberPulse 3.6s ease-in-out infinite;}
-  @keyframes emberPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:.9;transform:scale(1.08);}}
-  .flame{position:absolute;bottom:24px;transform-origin:bottom center;}
-  .flame.f1{animation:flick 1.5s ease-in-out infinite;}
-  .flame.f2{animation:flick 1.1s ease-in-out infinite reverse;}
-  .flame.f3{animation:flick 0.9s ease-in-out infinite;}
-  @keyframes flick{0%,100%{transform:scaleY(1) scaleX(1) translateX(0);}
-    25%{transform:scaleY(1.12) scaleX(.94) translateX(-2px);}
-    50%{transform:scaleY(.92) scaleX(1.05) translateX(2px);}
-    75%{transform:scaleY(1.06) scaleX(.97) translateX(-1px);}}
+    animation:emberPulse 3.6s ease-in-out infinite;pointer-events:none;}
+  @keyframes emberPulse{0%,100%{opacity:.55;}50%{opacity:.9;}}
+  .firesvg{position:relative;z-index:2;}
+  .fl{transform-origin:85px 118px;}
+  .fa{animation:flick 1.5s ease-in-out infinite;}
+  .fb{animation:flick 1.1s ease-in-out infinite reverse;}
+  .fc{animation:flick 0.9s ease-in-out infinite;}
+  @keyframes flick{0%,100%{transform:scaleY(1) scaleX(1);}
+    25%{transform:scaleY(1.1) scaleX(.95);}
+    50%{transform:scaleY(.93) scaleX(1.04);}
+    75%{transform:scaleY(1.05) scaleX(.98);}}
   .spark-d{position:absolute;width:3px;height:3px;border-radius:50%;
-    background:var(--ember);bottom:60px;opacity:0;
+    background:var(--ember);bottom:60px;left:50%;opacity:0;pointer-events:none;
     animation:rise2 linear infinite;}
   @keyframes rise2{0%{opacity:0;transform:translateY(0);}
     20%{opacity:1;}100%{opacity:0;transform:translateY(-90px) translateX(var(--dx,0));}}
@@ -307,6 +346,7 @@
 </head>
 <body>
 <div class="sky" id="sky"></div>
+<div class="scroller" id="scroller">
 <div class="wrap">
 
   <header>
@@ -323,43 +363,37 @@
     <button class="tab" data-t="patterns"></button>
     <button class="tab" data-t="spark"></button>
     <button class="tab" data-t="day"></button>
-    <button class="tab" data-t="night"></button>
     <button class="tab" data-t="timer"></button>
     <button class="tab" data-t="iron"></button>
     <button class="tab" data-t="avoid"></button>
-    <button class="tab" data-t="med"></button>
-    <button class="tab" data-t="why"></button>
   </div>
 
   <!-- ================= HOME / DEN ================= -->
   <section class="on" id="home">
     <div class="bonfire" id="bonfire">
       <div class="glow"></div>
-      <!-- logs -->
-      <svg width="150" height="150" viewBox="0 0 150 150" style="position:absolute;bottom:0;">
-        <!-- log pile -->
-        <g stroke="#3a2a22" stroke-width="2">
-          <rect x="38" y="116" width="74" height="13" rx="6" fill="#5a3d2e" transform="rotate(-8 75 122)"/>
-          <rect x="38" y="116" width="74" height="13" rx="6" fill="#4a3225" transform="rotate(8 75 122)"/>
+      <svg width="170" height="150" viewBox="0 0 170 150" class="firesvg">
+        <defs>
+          <linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd27a"/><stop offset="0.5" stop-color="#ff9d4d"/>
+            <stop offset="1" stop-color="#e7642a"/>
+          </linearGradient>
+          <linearGradient id="fl2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff1c4"/><stop offset="0.6" stop-color="#ffb45e"/>
+            <stop offset="1" stop-color="#ff7a36"/>
+          </linearGradient>
+        </defs>
+        <!-- logs -->
+        <g>
+          <rect x="48" y="118" width="74" height="13" rx="6" fill="#5a3d2e" transform="rotate(-8 85 124)"/>
+          <rect x="48" y="118" width="74" height="13" rx="6" fill="#4a3225" transform="rotate(8 85 124)"/>
+          <circle cx="60" cy="123" r="4" fill="#7a5440"/>
+          <circle cx="110" cy="123" r="4" fill="#7a5440"/>
         </g>
-        <circle cx="50" cy="121" r="4" fill="#7a5440"/>
-        <circle cx="100" cy="121" r="4" fill="#7a5440"/>
-      </svg>
-      <!-- flames -->
-      <svg class="flame f1" width="70" height="110" viewBox="0 0 70 110" style="z-index:2;">
-        <path d="M35 6 C50 34, 60 50, 50 76 C46 92, 24 92, 20 76 C12 54, 24 40, 35 6 Z" fill="url(#fl1)"/>
-        <defs><linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffd27a"/><stop offset="0.5" stop-color="#ff9d4d"/>
-          <stop offset="1" stop-color="#e7642a"/></linearGradient></defs>
-      </svg>
-      <svg class="flame f2" width="46" height="86" viewBox="0 0 46 86" style="z-index:3;">
-        <path d="M23 6 C33 26, 38 40, 31 58 C28 70, 16 70, 13 58 C8 44, 16 30, 23 6 Z" fill="url(#fl2)"/>
-        <defs><linearGradient id="fl2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#fff1c4"/><stop offset="0.6" stop-color="#ffb45e"/>
-          <stop offset="1" stop-color="#ff7a36"/></linearGradient></defs>
-      </svg>
-      <svg class="flame f3" width="26" height="56" viewBox="0 0 26 56" style="z-index:4;">
-        <path d="M13 4 C19 18, 22 26, 17 38 C15 46, 9 46, 7 38 C4 28, 9 18, 13 4 Z" fill="#fff3d0"/>
+        <!-- flames (animated inside SVG, centered at x=85) -->
+        <path class="fl fa" d="M85 30 C103 60, 112 78, 100 104 C95 119, 75 119, 70 104 C60 80, 74 64, 85 30 Z" fill="url(#fl1)"/>
+        <path class="fl fb" d="M85 48 C97 70, 102 84, 94 102 C90 114, 80 114, 76 102 C70 86, 78 70, 85 48 Z" fill="url(#fl2)"/>
+        <path class="fl fc" d="M85 64 C92 80, 95 88, 90 100 C88 108, 82 108, 80 100 C77 90, 80 80, 85 64 Z" fill="#fff3d0"/>
       </svg>
     </div>
 
@@ -514,15 +548,13 @@
   <!-- ================= MY DAY ================= -->
   <section id="day">
     <div class="subnav guide">
-      <button class="sn on" data-go="day">☀️ Day</button>
-      <button class="sn" data-go="night">🌙 Wind Down</button>
-      <button class="sn" data-go="iron">🩸 Iron</button>
-      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn" data-go="med">💊 Meds</button>
-      <button class="sn" data-go="why">🐝 Why</button>
+      <button class="sn on" data-go="day">🌗 Daily Rhythm</button>
+      <button class="sn" data-go="iron">💊 Treatment</button>
+      <button class="sn" data-go="avoid">🐝 Understanding</button>
     </div>
-    <p class="lead">RLS is partly set by what happens <i>before</i> bedtime. Win the day, calm the night. Pick even one. 🐛</p>
-    <div class="card"><span class="pill day">Morning + afternoon</span>
+    <p class="lead">RLS is partly set by what happens across your day. Win the day, calm the night. Pick even one. 🐛</p>
+
+    <div class="card"><span class="pill day">☀️ Morning + afternoon</span>
       <h2><span class="ic">💧</span> Baseline care</h2>
       <ul class="dots">
         <li><b>Sip water all day.</b> Dehydration makes nerves twitchy. A pinch of salt or electrolyte tab helps it absorb.</li>
@@ -538,20 +570,27 @@
         <li><b>Seated hamstring reach</b> — leg out, toes back, hinge forward 30–45 sec.</li>
         <li><b>Legs up the wall</b> — even 5 min resets things.</li>
       </ul></div>
-  </section>
-
-  <!-- ================= WIND DOWN ================= -->
-  <section id="night">
-    <div class="subnav guide">
-      <button class="sn" data-go="day">☀️ Day</button>
-      <button class="sn on" data-go="night">🌙 Wind Down</button>
-      <button class="sn" data-go="iron">🩸 Iron</button>
-      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn" data-go="med">💊 Meds</button>
-      <button class="sn" data-go="why">🐝 Why</button>
+    <div class="card"><h2><span class="ic">🎥</span> Follow-along stretches</h2>
+      <p>A physical therapist walks through gentle stretches made for restless legs. Nice to do in the evening before bed.</p>
+      <a class="vlink" href="https://www.youtube.com/watch?v=Oemmxek_bsc" target="_blank" rel="noopener">
+        <span class="play">▶</span>
+        <span class="vtxt"><b>RLS Relief Stretches 🦴</b><span>Ask Doctor Jo · guided leg stretches for RLS</span></span>
+        <span class="ext">↗</span>
+      </a>
+      <a class="vlink" href="https://www.youtube.com/watch?v=LI9upn4t9n8" target="_blank" rel="noopener">
+        <span class="play">▶</span>
+        <span class="vtxt"><b>7-Minute Bedtime Yoga 🛏️</b><span>Yoga With Adriene · short &amp; gentle for low-energy nights</span></span>
+        <span class="ext">↗</span>
+      </a>
+      <a class="vlink" href="https://www.youtube.com/watch?v=BiWDsfZ3zbo" target="_blank" rel="noopener">
+        <span class="play">▶</span>
+        <span class="vtxt"><b>12-Minute Wind-Down Yoga 🧘</b><span>Yoga With Adriene · fuller relaxing flow</span></span>
+        <span class="ext">↗</span>
+      </a>
+      <p style="margin-top:8px;color:var(--ink-faint);font-size:12px;">Opens in YouTube.</p>
     </div>
-    <p class="lead">An hour before bed, start telling your nervous system it's safe to rest. 🌙🦇</p>
-    <div class="card"><span class="pill night">~1 hr before bed</span>
+
+    <div class="card"><span class="pill night">🌙 ~1 hr before bed</span>
       <h2><span class="ic">📓</span> Brain dump</h2>
       <p>Stress dumps cortisol that spikes RLS. 5 min writing out whatever's rattling around nudges your brain out of fight-or-flight. Extra worth it for anxious brains.</p></div>
     <div class="card"><h2><span class="ic">🛁</span> Warm then cool</h2>
@@ -591,17 +630,41 @@
         box-shadow:0 0 30px rgba(196,169,240,.5);transition:transform 4s ease-in-out;"></div></div>
       <div class="trow"><button class="go" id="breathBtn" onclick="toggleBreath()">Begin</button></div>
     </div>
+    <div class="card"><h2><span class="ic">🔊</span> Cozy sounds</h2>
+      <p>Soft background sound to drift off to. Tap one — tap again to stop. Plays right here, no internet needed. 🦇</p>
+      <div class="sounds" id="sounds">
+        <button class="snd" data-snd="fire">🔥 Crackling fire</button>
+        <button class="snd" data-snd="rain">🌧️ Gentle rain</button>
+        <button class="snd" data-snd="thunder">⛈️ Thunderstorm</button>
+        <button class="snd" data-snd="stream">💧 Bubbling stream</button>
+      </div>
+      <div class="vol"><span>🔈 Volume</span>
+        <input id="vol" type="range" min="0" max="100" value="40" oninput="setVol(this.value)">
+      </div>
+      <p style="margin-top:9px;color:var(--ink-faint);font-size:12px;">Tip: keep your phone unlocked for the sound to keep playing. Pairs nicely with the timer above.</p>
+    </div>
+    <div class="card"><h2><span class="ic">🎧</span> Guided wind-down</h2>
+      <p>When your mind won't quiet, let someone else do the talking. Headphones, eyes closed, let it carry you down.</p>
+      <a class="vlink" href="https://www.youtube.com/watch?v=2f5mRTjkHJ4" target="_blank" rel="noopener">
+        <span class="play">▶</span>
+        <span class="vtxt"><b>Guided Sleep Meditation 🌙</b><span>Spoken meditation + water sounds · fall asleep in minutes</span></span>
+        <span class="ext">↗</span>
+      </a>
+      <a class="vlink" href="https://www.youtube.com/watch?v=B3anDh-jxw4" target="_blank" rel="noopener">
+        <span class="play">▶</span>
+        <span class="vtxt"><b>Muscle Relaxation for Sleep 💪</b><span>Tense &amp; release each muscle — great for jumpy legs</span></span>
+        <span class="ext">↗</span>
+      </a>
+      <p style="margin-top:8px;color:var(--ink-faint);font-size:12px;">Opens in YouTube.</p>
+    </div>
   </section>
 
-  <!-- ================= IRON ================= -->
+  <!-- ================= TREATMENT (iron + meds) ================= -->
   <section id="iron">
     <div class="subnav guide">
-      <button class="sn" data-go="day">☀️ Day</button>
-      <button class="sn" data-go="night">🌙 Wind Down</button>
-      <button class="sn on" data-go="iron">🩸 Iron</button>
-      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn" data-go="med">💊 Meds</button>
-      <button class="sn" data-go="why">🐝 Why</button>
+      <button class="sn" data-go="day">🌗 Daily Rhythm</button>
+      <button class="sn on" data-go="iron">💊 Treatment</button>
+      <button class="sn" data-go="avoid">🐝 Understanding</button>
     </div>
     <div class="card"><span class="pill day">The biggest lever</span>
       <h2><span class="ic">🩸</span> Iron is the #1 thing</h2>
@@ -625,41 +688,9 @@
         <li><b>Vitamin D3 &amp; B12</b> baseline — low levels make nerves more sensitive.</li>
       </ul>
       <p style="margin-top:10px;color:var(--ink-faint);font-size:12.5px;">Iron can harm in excess, so test first — don't megadose on your own.</p></div>
-  </section>
 
-  <!-- ================= WATCH OUT ================= -->
-  <section id="avoid">
-    <div class="subnav guide">
-      <button class="sn" data-go="day">☀️ Day</button>
-      <button class="sn" data-go="night">🌙 Wind Down</button>
-      <button class="sn" data-go="iron">🩸 Iron</button>
-      <button class="sn on" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn" data-go="med">💊 Meds</button>
-      <button class="sn" data-go="why">🐝 Why</button>
-    </div>
-    <p class="lead">Some everyday things quietly crank RLS up. Not rules — just things to notice. 🐝</p>
-    <div class="warnbox"><h2><span class="ic">🚫</span> The big one: sedating antihistamines</h2>
-      <p>Benadryl (diphenhydramine), ZzzQuil, and "PM" sleep aids block dopamine and can flare RLS hard within an hour. For allergies, ask a pharmacist about gentler options.</p></div>
-    <div class="card"><h2><span class="ic">💬</span> Worth a chat with your doctor</h2>
-      <p>Some <b>antidepressants</b> (SSRIs/SNRIs like sertraline, venlafaxine, mirtazapine) can worsen RLS. <b>Bupropion</b> usually doesn't — and can even help. If you take anything for mood/anxiety and your legs got worse after starting, mention it. <b>Never stop a prescription on your own</b> — just raise it.</p></div>
-    <div class="card"><h2><span class="ic">🔎</span> Common triggers to watch</h2>
-      <div><span class="tag">caffeine after noon</span><span class="tag">alcohol</span><span class="tag">nicotine</span>
-        <span class="tag">dehydration</span><span class="tag">hot rooms</span><span class="tag">late hard workouts</span>
-        <span class="tag">sugary dinners</span><span class="tag">poor sleep</span><span class="tag">some anti-nausea meds</span></div>
-      <p style="margin-top:10px;">Everyone's triggers differ — that's exactly what the Check In tab helps you find.</p></div>
-  </section>
-
-  <!-- ================= MED WATCH / AUGMENTATION ================= -->
-  <section id="med">
-    <div class="subnav guide">
-      <button class="sn" data-go="day">☀️ Day</button>
-      <button class="sn" data-go="night">🌙 Wind Down</button>
-      <button class="sn" data-go="iron">🩸 Iron</button>
-      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn on" data-go="med">💊 Meds</button>
-      <button class="sn" data-go="why">🐝 Why</button>
-    </div>
-    <p class="lead">You're not on RLS medication now — so this is just <i>future-you insurance</i>. If a doctor ever puts you on certain older RLS drugs, there's one pattern that's really good to recognize early. 💊</p>
+    <div class="seph"><span>💊 Prescription meds &amp; the augmentation watch</span></div>
+    <p class="lead">You're not on RLS medication now — so this is just <i>future-you insurance</i>. If a doctor ever puts you on certain older RLS drugs, there's one pattern that's really good to recognize early.</p>
 
     <div class="card">
       <h2><span class="ic">🌅</span> The pattern to know: "augmentation"</h2>
@@ -695,16 +726,27 @@
     </div>
   </section>
 
-  <!-- ================= WHY ================= -->
-  <section id="why">
+  <!-- ================= UNDERSTANDING (watch out + why) ================= -->
+  <section id="avoid">
     <div class="subnav guide">
-      <button class="sn" data-go="day">☀️ Day</button>
-      <button class="sn" data-go="night">🌙 Wind Down</button>
-      <button class="sn" data-go="iron">🩸 Iron</button>
-      <button class="sn" data-go="avoid">⚠️ Watch Out</button>
-      <button class="sn" data-go="med">💊 Meds</button>
-      <button class="sn on" data-go="why">🐝 Why</button>
+      <button class="sn" data-go="day">🌗 Daily Rhythm</button>
+      <button class="sn" data-go="iron">💊 Treatment</button>
+      <button class="sn on" data-go="avoid">🐝 Understanding</button>
     </div>
+    <p class="lead">Some everyday things quietly crank RLS up — and it helps to know <i>why</i> any of this works. Not rules, just understanding. 🐝</p>
+
+    <div class="warnbox"><h2><span class="ic">🚫</span> The big one: sedating antihistamines</h2>
+      <p>Benadryl (diphenhydramine), ZzzQuil, and "PM" sleep aids block dopamine and can flare RLS hard within an hour. For allergies, ask a pharmacist about gentler options.</p></div>
+    <div class="card"><h2><span class="ic">💬</span> Worth a chat with your doctor</h2>
+      <p>Some <b>antidepressants</b> (SSRIs/SNRIs like sertraline, venlafaxine, mirtazapine) can worsen RLS. <b>Bupropion</b> usually doesn't — and can even help. If you take anything for mood/anxiety and your legs got worse after starting, mention it. <b>Never stop a prescription on your own</b> — just raise it.</p></div>
+    <div class="card"><h2><span class="ic">🔎</span> Common triggers to watch</h2>
+      <div><span class="tag">caffeine after noon</span><span class="tag">alcohol</span><span class="tag">nicotine</span>
+        <span class="tag">dehydration</span><span class="tag">hot rooms</span><span class="tag">late hard workouts</span>
+        <span class="tag">sugary dinners</span><span class="tag">poor sleep</span><span class="tag">some anti-nausea meds</span>
+        <span class="tag">hormonal cycle</span></div>
+      <p style="margin-top:10px;">Everyone's triggers differ — that's exactly what the Log tab helps you find.</p></div>
+
+    <div class="seph"><span>🐝 Why this happens</span></div>
     <div class="card"><h2><span class="ic">🧠</span> What's actually happening</h2>
       <p>Your brain uses dopamine as a "brake pedal" for movement, and needs iron to make it. When brain iron runs low, the brake weakens — so at rest, legs get that urge to move. Moving briefly restores the brake, which is why walking helps and lying still feels awful.</p></div>
     <div class="card"><h2><span class="ic">🧬</span> Why you, why now</h2>
@@ -731,6 +773,7 @@
     </div>
   </section>
 
+</div>
 </div>
 
 <nav class="tabbar" id="tabbar">
@@ -778,9 +821,11 @@ var data=load();
 })();
 
 var TRIGGERS=["☕ Caffeine pm","🍷 Alcohol","🚬 Nicotine","🥤 Low water","🔥 Hot room",
-  "🏋️ Late workout","🍰 Heavy/sugary dinner","😣 Stressful day","😴 Poor sleep","💊 New meds"];
+  "🏋️ Late workout","🍰 Heavy/sugary dinner","😣 Stressful day","😴 Poor sleep","💊 New meds",
+  "🤧 Antihistamine","🩸 Period/hormonal"];
 var HELPERS=["🧦 Compression","🧘 Stretches","🔥 Heat","🧊 Cold","🚶 Walk","💧 Hydrated",
-  "🛁 Warm bath","🧲 Magnesium","🩸 Iron","🌬️ Breathing","📓 Brain dump"];
+  "🛁 Warm bath","🧲 Magnesium","🩸 Iron","🌬️ Breathing","📓 Brain dump",
+  "🎮 Distraction","❄️ Cool room"];
 
 var CRITERIA=[
   "An urge to move my legs, usually with an uncomfortable creepy/crawly feeling",
@@ -807,7 +852,24 @@ var SPARKS=[
   "You built habits that help. On hard nights, trust the habits even when you don't feel them working.",
   "Being tired and frustrated is fair. You're carrying something invisible, and you're still here. 🌟",
   "Caffeine cutoff, a daytime walk, a cool pillow — tiny choices stack into calmer nights. 🐝",
-  "Your worth isn't measured in hours slept. Rest however you can, in whatever shape it takes. 🌙"
+  "Your worth isn't measured in hours slept. Rest however you can, in whatever shape it takes. 🌙",
+  // ---- playful / themed ----
+  "Bonfire lit. Restless legs paused. You didn't perish in the night — that's a win, Tarnished. 🔥",
+  "Somewhere a spider is knitting an absurdly elaborate web for zero applause. Do your little thing too. 🕷️",
+  "Otters hold hands while they sleep so they don't drift apart. Tonight, hold your own. You've got you. 🦦",
+  "You rolled the dice on bedtime and the legs crit-failed. Reload, stretch, try the encounter again. 🎲",
+  "Praise the sun tomorrow ☀️ — tonight, praise the cool side of the pillow. \\[T]/",
+  "A beetle can carry many times its weight and still trundle on. So can you, little tank. 🪲",
+  "This flare is just a tough mini-boss. You've beaten it before. You know the moveset. 🗡️",
+  "Spiders have eight legs and zero of them are restless right now. The audacity. Get yours to chill too. 🕸️",
+  "You are not under-leveled for this. You've grinded the habits. Trust your build. 🛡️",
+  "Moths chase the porch light all night and never once call it a failure. Wander gently. 🦋",
+  "Even at the bonfire, you don't have to be okay — you just have to rest. Sit a while. 🔥",
+  "Snails carry their whole house and still show up to the night shift. Slow counts. 🐌",
+  "Rough night? Mark it 'attempted in good faith' and respawn tomorrow. No souls lost. 💀✨",
+  "Fireflies only glow in the dark. Some of your best calm is found on the hard nights. ✨",
+  "Bees don't know they 'shouldn't' be able to fly. Ignore the legs' opinion and rest anyway. 🐝",
+  "You'd comfort a friend whose legs wouldn't quit. Be that gentle with yourself tonight. 💜"
 ];
 
 var sel={sev:null,slp:null,trig:[],help:[]};
@@ -839,19 +901,21 @@ var sel={sev:null,slp:null,trig:[],help:[]};
 var tabs=document.querySelectorAll('.tab');
 // which bottom-bar tab "owns" each section
 var GROUP={home:'home', log:'log', patterns:'log', sos:'sos', timer:'sos',
-  day:'day', night:'day', iron:'day', avoid:'day', med:'day', why:'day', spark:'spark'};
+  day:'day', iron:'day', avoid:'day', spark:'spark'};
 function go(t){
   tabs.forEach(function(b){b.classList.toggle('on',b.dataset.t===t);});
   document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===t);});
   // sync bottom bar to the owning group
   var owner=GROUP[t]||'home';
   document.querySelectorAll('.tb').forEach(function(b){b.classList.toggle('on',b.dataset.go===owner);});
-  window.scrollTo({top:0,behavior:'smooth'});
+  var sc=document.getElementById('scroller');
+  if(sc)sc.scrollTo({top:0,behavior:'smooth'}); else window.scrollTo({top:0,behavior:'smooth'});
+  if(t!=='timer'&&typeof stopSound==='function')stopSound();
   if(t==='home')renderHome();
   if(t==='patterns')renderPatterns();
   if(t==='log')renderLog();
-  if(t==='why')renderCriteria();
-  if(t==='med')renderMed();
+  if(t==='avoid')renderCriteria();
+  if(t==='iron')renderMed();
   if(t==='spark')renderSpark();
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){go(b.dataset.t);});});
@@ -989,7 +1053,7 @@ function renderHome(){
     (done>=5?"Beautiful consistency. 🦋":done>=2?"You're finding the rhythm. Keep going.":"Every single night counts — no streaks to break here.");
 }
 function last7Keys(){var arr=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);
-  arr.push(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate());}return arr;}
+  arr.push(d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()));}return arr;}
 
 /* ============ PATTERNS / THE "RESPONSE" ============ */
 function renderPatterns(){
@@ -1228,6 +1292,166 @@ function chime(){try{var a=new(window.AudioContext||window.webkitAudioContext)()
     o.frequency.value=f;o.connect(g);g.connect(a.destination);var t=a.currentTime+i*.18;
     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.3,t+.04);
     g.gain.exponentialRampToValueAtTime(.001,t+.5);o.start(t);o.stop(t+.5);});}catch(e){}}
+
+/* ============ COZY AMBIENT SOUNDS (synthesized, offline) ============ */
+/* One persistent AudioContext + a permanent output gain. Switching sounds
+   crossfades; the volume slider just ramps the output gain. Nothing is ever
+   torn down mid-session, which avoids iOS lag and cut-outs. */
+var sndCtx=null, outGain=null, sndCurrent=null, sndVol=0.40;
+var active=null;        // {src,filter,bed,timer,kind}
+var EASE=0.35;
+function noiseBuffer(ctx,seconds,color){
+  var len=Math.floor(ctx.sampleRate*seconds), buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0);
+  if(color==='brown'){
+    var last=0;
+    for(var i=0;i<len;i++){var w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5;}
+  } else if(color==='pink'){
+    var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(var j=0;j<len;j++){
+      var wj=Math.random()*2-1;
+      b0=0.99886*b0+wj*0.0555179; b1=0.99332*b1+wj*0.0750759; b2=0.96900*b2+wj*0.1538520;
+      b3=0.86650*b3+wj*0.3104856; b4=0.55000*b4+wj*0.5329522; b5=-0.7616*b5-wj*0.0168980;
+      d[j]=(b0+b1+b2+b3+b4+b5+b6+wj*0.5362)*0.11; b6=wj*0.115926;
+    }
+  } else {
+    for(var k=0;k<len;k++)d[k]=Math.random()*2-1;
+  }
+  return buf;
+}
+function ensureCtx(){
+  if(sndCtx)return true;
+  var Ctx=window.AudioContext||window.webkitAudioContext; if(!Ctx)return false;
+  sndCtx=new Ctx();
+  outGain=sndCtx.createGain();
+  outGain.gain.value=sndVol*EASE;
+  outGain.connect(sndCtx.destination);
+  return true;
+}
+function fadeOutActive(){
+  if(!active)return;
+  var a=active; active=null;
+  if(a.timer){clearTimeout(a.timer);clearInterval(a.timer);}
+  try{
+    var t=sndCtx.currentTime;
+    a.bed.gain.cancelScheduledValues(t);
+    a.bed.gain.setValueAtTime(a.bed.gain.value, t);
+    a.bed.gain.linearRampToValueAtTime(0.0001, t+0.4);   // smooth fade, no click
+    a.src.stop(t+0.5);
+  }catch(e){}
+}
+function startSound(kind){
+  if(!ensureCtx())return;
+  var ctx=sndCtx;
+  if(ctx.state==='suspended'&&ctx.resume)ctx.resume();
+
+  var color = (kind==='fire')?'brown':'pink';
+  var src=ctx.createBufferSource(); src.buffer=noiseBuffer(ctx,5,color); src.loop=true;
+  var filter=ctx.createBiquadFilter();
+  var bedG=ctx.createGain();                 // per-sound level + fade
+  src.connect(filter); filter.connect(bedG); bedG.connect(outGain);
+
+  var lvl=1;
+  if(kind==='rain'){ filter.type='bandpass'; filter.frequency.value=2200; filter.Q.value=0.4; lvl=0.5; }
+  else if(kind==='thunder'){ filter.type='lowpass'; filter.frequency.value=800; lvl=0.35; }
+  else if(kind==='fire'){ filter.type='lowpass'; filter.frequency.value=320; lvl=0.9; }
+  else if(kind==='stream'){ filter.type='bandpass'; filter.frequency.value=1600; filter.Q.value=0.6; lvl=0.45; }
+
+  // fade the bed in to its level (output gain carries the user volume separately)
+  bedG.gain.setValueAtTime(0.0001, ctx.currentTime);
+  bedG.gain.linearRampToValueAtTime(lvl, ctx.currentTime+1.2);
+
+  var rec={src:src,filter:filter,bed:bedG,timer:null,kind:kind};
+
+  // small water "tick"/droplet — short pitched blip
+  function drop(freq,amp,dur){
+    var d=ctx.createBufferSource(); d.buffer=noiseBuffer(ctx,.04,'white');
+    var df=ctx.createBiquadFilter(); df.type='bandpass'; df.frequency.value=freq; df.Q.value=6+Math.random()*8;
+    var dg=ctx.createGain(); var t=ctx.currentTime;
+    dg.gain.setValueAtTime(0.0001,t);
+    dg.gain.exponentialRampToValueAtTime(amp,t+0.004);
+    dg.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    d.connect(df); df.connect(dg); dg.connect(outGain); d.start(t); d.stop(t+dur+0.05);
+  }
+
+  if(kind==='thunder'){
+    var rumble=function(){
+      if(!sndCtx||sndCtx.state==='closed'||active!==rec)return;
+      var rb=ctx.createBufferSource(); rb.buffer=noiseBuffer(ctx,2.2,'brown');
+      var rf=ctx.createBiquadFilter(); rf.type='lowpass'; rf.frequency.value=80+Math.random()*45;
+      var rg=ctx.createGain(); var t=ctx.currentTime;
+      var peak=0.4+Math.random()*0.4; // clearer now that the bed is lighter
+      rg.gain.setValueAtTime(0.0001,t);
+      rg.gain.exponentialRampToValueAtTime(peak,t+0.5+Math.random()*0.7);
+      rg.gain.exponentialRampToValueAtTime(0.0001,t+2.2+Math.random()*1.6);
+      rb.connect(rf); rf.connect(rg); rg.connect(outGain);
+      rb.start(t); rb.stop(t+4.5);
+      rec.timer=setTimeout(rumble, 8000+Math.random()*12000);
+    };
+    rec.timer=setTimeout(rumble, 3500+Math.random()*3500);
+  }
+  else if(kind==='rain'){
+    // scattered light droplet ticks over the hiss
+    var rainTick=function(){
+      if(!sndCtx||sndCtx.state==='closed'||active!==rec)return;
+      var n=1+Math.floor(Math.random()*3);
+      for(var i=0;i<n;i++) setTimeout(function(){ if(active===rec) drop(2500+Math.random()*2500, 0.05+Math.random()*0.07, 0.03+Math.random()*0.04); }, Math.random()*120);
+      rec.timer=setTimeout(rainTick, 70+Math.random()*160);
+    };
+    rec.timer=setTimeout(rainTick, 300);
+  }
+  else if(kind==='stream'){
+    // faster, bubblier blips — lower & rounder than rain
+    var bubble=function(){
+      if(!sndCtx||sndCtx.state==='closed'||active!==rec)return;
+      drop(900+Math.random()*1400, 0.05+Math.random()*0.08, 0.05+Math.random()*0.07);
+      rec.timer=setTimeout(bubble, 55+Math.random()*130);
+    };
+    rec.timer=setTimeout(bubble, 250);
+  }
+  else if(kind==='fire'){
+    var crackle=function(){
+      if(!sndCtx||sndCtx.state==='closed'||active!==rec)return;
+      var burst=1+Math.floor(Math.random()*2);
+      for(var b=0;b<burst;b++){
+        var pop=ctx.createBufferSource(); pop.buffer=noiseBuffer(ctx,.06,'white');
+        var pf=ctx.createBiquadFilter(); pf.type='bandpass';
+        pf.frequency.value=700+Math.random()*1500; pf.Q.value=0.5+Math.random()*0.7;
+        var pg=ctx.createGain(); var t=ctx.currentTime+b*(0.03+Math.random()*0.06);
+        var amp=0.05+Math.random()*0.18;
+        pg.gain.setValueAtTime(0.0001,t);
+        pg.gain.exponentialRampToValueAtTime(amp,t+0.005);
+        pg.gain.exponentialRampToValueAtTime(0.0001,t+0.05+Math.random()*0.13);
+        pop.connect(pf); pf.connect(pg); pg.connect(outGain);
+        pop.start(t); pop.stop(t+0.28);
+      }
+      rec.timer=setTimeout(crackle, 220+Math.random()*900);
+    };
+    rec.timer=setTimeout(crackle, 600);
+  }
+  src.start(0);
+  active=rec; sndCurrent=kind;
+}
+function stopSound(){
+  fadeOutActive();
+  sndCurrent=null;
+  document.querySelectorAll('.snd').forEach(function(b){b.classList.remove('on');});
+}
+function toggleSound(kind,btn){
+  var wasOn=(sndCurrent===kind);
+  fadeOutActive();
+  document.querySelectorAll('.snd').forEach(function(b){b.classList.remove('on');});
+  if(!wasOn){ startSound(kind); if(btn)btn.classList.add('on'); if(navigator.vibrate)navigator.vibrate(5); }
+  else { sndCurrent=null; }
+}
+function setVol(v){
+  sndVol=v/100;
+  if(outGain&&sndCtx){
+    try{ outGain.gain.setTargetAtTime(sndVol*EASE, sndCtx.currentTime, 0.08); }catch(e){}
+  }
+}
+document.querySelectorAll('.snd').forEach(function(b){
+  b.addEventListener('click',function(){toggleSound(b.dataset.snd,b);});
+});
 function toggleTimer(){if(running){running=false;clearInterval(tick);startBtn.textContent='Resume';tlabel.textContent='paused';return;}
   running=true;startBtn.textContent='Pause';tlabel.textContent='breathe… you\u2019re doing great 🦋';
   tick=setInterval(function(){left--;draw();if(left<=0){clearInterval(tick);running=false;startBtn.textContent='Start';
